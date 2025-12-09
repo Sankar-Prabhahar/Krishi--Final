@@ -1,7 +1,7 @@
 import { findNearestMandis, getCommoditiesList } from "./marketService";
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_URL =
+const GEMINI_URL = "AIzaSyBPZKqQAdZuvNbfJfBtiwpAdU-KLsdysSw"
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
 let lastRequestTime = 0;

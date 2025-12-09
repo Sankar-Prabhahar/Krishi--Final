@@ -1,249 +1,125 @@
-import axios from "axios";
-
-const API_KEY = "1c0ff9c24c32fb28e6644ec4110fd944";
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 const BASE_URL = "https://api.openweathermap.org/data/2.5";
 
-/**
- * Get current weather for a location
- * @param {number} lat - Latitude
- * @param {number} lon - Longitude
- * @returns {Promise<Object>} Current weather data
- */
-export const getCurrentWeather = async (lat, lon) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/weather`, {
-      params: {
-        lat,
-        lon,
-        appid: API_KEY,
-        units: "metric",
-      },
-    });
-    return formatCurrentWeather(response.data);
-  } catch (error) {
-    console.error("Error fetching current weather:", error);
-    throw error;
-  }
-};
+export const weatherService = {
+  // Get current weather for given coordinates
+  getCurrentWeather: async (lat, lon) => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+      );
 
-/**
- * Get 5-day forecast (3-hour intervals)
- * @param {number} lat - Latitude
- * @param {number} lon - Longitude
- * @returns {Promise<Array>} Forecast data
- */
-export const getForecast = async (lat, lon) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/forecast`, {
-      params: {
-        lat,
-        lon,
-        appid: API_KEY,
-        units: "metric",
-      },
-    });
-    return formatForecast(response.data);
-  } catch (error) {
-    console.error("Error fetching forecast:", error);
-    throw error;
-  }
-};
+      if (!response.ok) {
+        throw new Error("Weather data fetch failed");
+      }
 
-/**
- * Get weather by city name
- * @param {string} city - City name
- * @returns {Promise<Object>} Current weather data
- */
-export const getWeatherByCity = async (city) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/weather`, {
-      params: {
-        q: city,
-        appid: API_KEY,
-        units: "metric",
-      },
-    });
-    return formatCurrentWeather(response.data);
-  } catch (error) {
-    console.error("Error fetching weather by city:", error);
-    throw error;
-  }
-};
+      const data = await response.json();
 
-/**
- * Format current weather response
- */
-const formatCurrentWeather = (data) => {
-  return {
-    location: data.name,
-    country: data.sys.country,
-    temperature: Math.round(data.main.temp),
-    feelsLike: Math.round(data.main.feels_like),
-    humidity: data.main.humidity,
-    pressure: data.main.pressure,
-    windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
-    windDirection: data.wind.deg,
-    visibility: data.visibility / 1000, // Convert to km
-    clouds: data.clouds.all,
-    description: data.weather[0].description,
-    icon: data.weather[0].icon,
-    main: data.weather[0].main,
-    sunrise: new Date(data.sys.sunrise * 1000),
-    sunset: new Date(data.sys.sunset * 1000),
-    timestamp: new Date(data.dt * 1000),
-    coord: data.coord,
-  };
-};
-
-/**
- * Format forecast response - group by day
- */
-const formatForecast = (data) => {
-  const dailyForecasts = {};
-
-  data.list.forEach((item) => {
-    const date = new Date(item.dt * 1000).toLocaleDateString("en-IN", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
-
-    if (!dailyForecasts[date]) {
-      dailyForecasts[date] = {
-        date,
-        dateObj: new Date(item.dt * 1000),
-        temps: [],
-        humidity: [],
-        descriptions: [],
-        icons: [],
-        rain: 0,
-        windSpeeds: [],
+      return {
+        temperature: data.main.temp,
+        humidity: data.main.humidity,
+        description: data.weather[0].description,
+        icon: data.weather[0].icon,
+        windSpeed: data.wind.speed,
+        pressure: data.main.pressure,
+        feelsLike: data.main.feels_like,
+        location: data.name,
+      };
+    } catch (error) {
+      console.error("Error fetching weather:", error);
+      // Fallback to mock data
+      return {
+        temperature: 28,
+        humidity: 65,
+        description: "Partly Cloudy",
+        icon: "02d",
+        windSpeed: 12,
+        pressure: 1013,
+        feelsLike: 30,
+        location: "Your Location",
       };
     }
+  },
 
-    dailyForecasts[date].temps.push(item.main.temp);
-    dailyForecasts[date].humidity.push(item.main.humidity);
-    dailyForecasts[date].descriptions.push(item.weather[0].description);
-    dailyForecasts[date].icons.push(item.weather[0].icon);
-    dailyForecasts[date].windSpeeds.push(item.wind.speed * 3.6);
+  // Get 5-day forecast
+  getForecast: async (lat, lon) => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+      );
 
-    if (item.rain && item.rain["3h"]) {
-      dailyForecasts[date].rain += item.rain["3h"];
+      if (!response.ok) {
+        throw new Error("Forecast data fetch failed");
+      }
+
+      const data = await response.json();
+
+      // Process forecast data - get one entry per day at 12:00
+      const dailyForecasts = [];
+      const processedDates = new Set();
+
+      data.list.forEach((item) => {
+        const date = new Date(item.dt * 1000);
+        const dateStr = date.toISOString().split("T")[0];
+
+        if (!processedDates.has(dateStr) && dailyForecasts.length < 7) {
+          processedDates.add(dateStr);
+          dailyForecasts.push({
+            date: dateStr,
+            temp: item.main.temp,
+            tempMin: item.main.temp_min,
+            tempMax: item.main.temp_max,
+            humidity: item.main.humidity,
+            description: item.weather[0].description,
+            icon: item.weather[0].icon,
+            rainfall: item.rain ? item.rain["3h"] || 0 : 0,
+          });
+        }
+      });
+
+      return dailyForecasts;
+    } catch (error) {
+      console.error("Error fetching forecast:", error);
+      // Fallback to mock data
+      return Array(7)
+        .fill(null)
+        .map((_, i) => ({
+          date: new Date(Date.now() + i * 86400000).toISOString().split("T")[0],
+          temp: 28 + Math.random() * 4,
+          tempMin: 24 + Math.random() * 2,
+          tempMax: 30 + Math.random() * 3,
+          humidity: 60 + Math.random() * 10,
+          description: "Partly Cloudy",
+          icon: "02d",
+          rainfall: Math.random() > 0.7 ? Math.random() * 10 : 0,
+        }));
     }
-  });
+  },
 
-  // Process each day to get summary
-  return Object.values(dailyForecasts)
-    .map((day) => ({
-      date: day.date,
-      dateObj: day.dateObj,
-      tempMin: Math.round(Math.min(...day.temps)),
-      tempMax: Math.round(Math.max(...day.temps)),
-      humidity: Math.round(
-        day.humidity.reduce((a, b) => a + b, 0) / day.humidity.length
-      ),
-      description: getMostFrequent(day.descriptions),
-      icon: getMostFrequent(day.icons),
-      rain: Math.round(day.rain * 10) / 10,
-      windSpeed: Math.round(
-        day.windSpeeds.reduce((a, b) => a + b, 0) / day.windSpeeds.length
-      ),
-    }))
-    .slice(0, 7); // Limit to 7 days
-};
+  // Get user's geolocation
+  getUserLocation: () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation not supported"));
+        return;
+      }
 
-/**
- * Get most frequent item in array
- */
-const getMostFrequent = (arr) => {
-  const frequency = {};
-  let maxCount = 0;
-  let mostFrequent = arr[0];
-
-  arr.forEach((item) => {
-    frequency[item] = (frequency[item] || 0) + 1;
-    if (frequency[item] > maxCount) {
-      maxCount = frequency[item];
-      mostFrequent = item;
-    }
-  });
-
-  return mostFrequent;
-};
-
-/**
- * Get farming-specific weather alerts
- */
-export const getFarmingAlerts = (weather, forecast) => {
-  const alerts = [];
-
-  // High temperature alert
-  if (weather.temperature > 35) {
-    alerts.push({
-      type: "warning",
-      title: "High Temperature Alert",
-      message: `Temperature is ${weather.temperature}°C. Consider irrigation in early morning or evening.`,
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          // Default to Delhi coordinates as fallback
+          resolve({
+            lat: 28.6139,
+            lon: 77.209,
+          });
+        }
+      );
     });
-  }
-
-  // Low humidity alert
-  if (weather.humidity < 40) {
-    alerts.push({
-      type: "warning",
-      title: "Low Humidity",
-      message:
-        "Humidity is low. Increase irrigation frequency to prevent crop stress.",
-    });
-  }
-
-  // High humidity - disease risk
-  if (weather.humidity > 80) {
-    alerts.push({
-      type: "warning",
-      title: "High Humidity - Disease Risk",
-      message:
-        "Fungal disease risk is HIGH due to high humidity. Consider preventive spraying.",
-    });
-  }
-
-  // Rain forecast
-  const upcomingRain = forecast.find((day) => day.rain > 5);
-  if (upcomingRain) {
-    alerts.push({
-      type: "info",
-      title: "Rain Expected",
-      message: `${upcomingRain.rain}mm rain expected on ${upcomingRain.date}. Postpone fertilizer application.`,
-    });
-  }
-
-  // Good spraying conditions
-  if (
-    weather.windSpeed < 15 &&
-    weather.humidity > 50 &&
-    weather.humidity < 80
-  ) {
-    alerts.push({
-      type: "success",
-      title: "Good Spraying Conditions",
-      message: "Current weather is ideal for pesticide/fertilizer spraying.",
-    });
-  }
-
-  // High wind alert
-  if (weather.windSpeed > 25) {
-    alerts.push({
-      type: "warning",
-      title: "High Wind Alert",
-      message: "Wind speed is high. Avoid spraying pesticides today.",
-    });
-  }
-
-  return alerts;
-};
-
-export default {
-  getCurrentWeather,
-  getForecast,
-  getWeatherByCity,
-  getFarmingAlerts,
+  },
 };
