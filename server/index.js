@@ -17,6 +17,7 @@ app.use(
       "http://localhost:3000",
       "https://astonishing-griffin-54c99b.netlify.app",
       "https://krishi-mitra.netlify.app",
+      "https://krishi-final.vercel.app",
     ],
     credentials: true,
   })
