@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext';
 
 const FarmContext = createContext();
 
-const API_URL = 'http://localhost:5001/api';
+import { API_URL } from '../config';
 
 export const FarmProvider = ({ children }) => {
   const { user, getToken, updateUser, isAuthenticated } = useAuth();
