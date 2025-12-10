@@ -1,7 +1,7 @@
 import axios from "axios";
 import { generateAIResponse } from "./aiService";
 
-const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+const GOOGLE_API_KEY = "AIzaSyBkDD3UamVlyvAuc97RxOuh1go4Q3_MB7g";
 
 /**
  * Get user's current location

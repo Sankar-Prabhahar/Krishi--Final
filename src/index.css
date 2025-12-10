@@ -4973,3 +4973,249 @@ button {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
+
+/* =========================================
+   RESPONSIVE NAVIGATION & LAYOUT OVERRIDES
+   ========================================= */
+
+/* Header & Navigation */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  padding: 0.75rem 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.logo-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.desktop-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  background: var(--color-surface-alt);
+  color: var(--color-primary);
+}
+
+.nav-link.active {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text-main);
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+/* Mobile Nav Overlay */
+.mobile-nav {
+  position: fixed;
+  top: 73px;
+  /* Header height approx */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-surface);
+  z-index: 999;
+  padding: 1.5rem;
+  overflow-y: auto;
+  animation: slideDown 0.3s ease-out;
+  border-top: 1px solid var(--color-border);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  color: var(--color-text-main);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s;
+  background: var(--color-surface-alt);
+}
+
+.mobile-nav-link.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.mobile-nav-link:hover:not(.active) {
+  background: #E8F5E9;
+  transform: translateX(5px);
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .desktop-nav span {
+    display: none;
+    /* Hide labels on medium screens, show icons only */
+  }
+
+  .nav-link {
+    padding: 0.5rem;
+    border-radius: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-actions {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
+/* Global Responsive Improvements */
+img,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Ensure tables scroll on small screens */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better Grid Responsiveness */
+.dashboard-grid,
+.features-grid,
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Adjust card paddings for mobile */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .card,
+  .feature-card,
+  .dash-card {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.75rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* Market Page Responsive */
+.mandi-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .mandi-list {
+    grid-template-columns: 1fr;
+  }
+
+  .mandi-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* Ensure comparison cards stack on mobile */
+@media (max-width: 768px) {
+  .comparison-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .comp-vs {
+    margin: 1rem 0;
+  }
+
+  .rec-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rec-profit {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+}

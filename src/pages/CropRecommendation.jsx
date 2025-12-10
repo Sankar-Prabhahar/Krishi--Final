@@ -65,7 +65,7 @@ const CropRecommendation = () => {
     try {
       // Fetch current weather
       const weatherRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${farmData.location.lat}&lon=${farmData.location.lng}&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}&units=metric`
+        'https://api.openweathermap.org/data/2.5/weather?lat=23.0225&lon=72.5714&appid=1c0ff9c24c32fb28e6644ec4110fd944&units=metric'
       );
       const weatherData = await weatherRes.json();
       
@@ -81,7 +81,7 @@ const CropRecommendation = () => {
 
       // Fetch 5-day forecast
       const forecastRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${farmData.location.lat}&lon=${farmData.location.lng}&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}&units=metric`
+        'https://api.openweathermap.org/data/2.5/forecast?lat=23.0225&lon=72.5714&appid=1c0ff9c24c32fb28e6644ec4110fd944&units=metric'
       );
       const forecastData = await forecastRes.json();
       

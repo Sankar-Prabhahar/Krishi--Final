@@ -1,8 +1,8 @@
 import { findNearestMandis, getCommoditiesList } from "./marketService";
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_URL = "AIzaSyBPZKqQAdZuvNbfJfBtiwpAdU-KLsdysSw"
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const GEMINI_API_KEY = "AIzaSyC4ssNnn25rsnL6gh1GHWoGIjtvE2w3Lpc";
+const GEMINI_URL =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 let lastRequestTime = 0;
 const MIN_REQUEST_INTERVAL = 2000; // 2 sec before requests
@@ -19,10 +19,11 @@ const LANGUAGE_NAMES = {
   "pa-IN": "Punjabi",
 };
 
-export const generateAIResponse = async (
+const generateAIResponse = async (
   prompt,
   language = "en-IN",
-  context = {}
+  context = {},
+  retries = 0
 ) => {
   // Rate limit protection
   const now = Date.now();
@@ -61,9 +62,20 @@ export const generateAIResponse = async (
 
     // Handle rate limiting
     if (response.status === 429) {
-      console.warn("Rate limited, waiting 5 seconds...");
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      return generateAIResponse(prompt, language, context); // Retry once
+      if (retries >= 3) {
+        console.error(
+          "Max retries exceeded for AI service. Switching to fallback."
+        );
+        return null;
+      }
+      const waitTime = Math.pow(2, retries) * 2000; // 2s, 4s, 8s
+      console.warn(
+        `Rate limited, waiting ${waitTime / 1000} seconds... (Attempt ${
+          retries + 1
+        }/3)`
+      );
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
+      return generateAIResponse(prompt, language, context, retries + 1);
     }
 
     if (!response.ok) {
@@ -80,6 +92,8 @@ export const generateAIResponse = async (
     return null;
   }
 };
+
+export { generateAIResponse };
 
 /**
  * Get AI Disease Analysis and Treatment Plan
