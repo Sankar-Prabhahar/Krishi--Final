@@ -18,6 +18,7 @@ app.use(
       "https://astonishing-griffin-54c99b.netlify.app",
       "https://krishi-mitra.netlify.app",
       "https://krishi-final.vercel.app",
+      "https://krishi-final-8sbm04uk2-sankar-prabhahars-projects.vercel.app",
     ],
     credentials: true,
   })
