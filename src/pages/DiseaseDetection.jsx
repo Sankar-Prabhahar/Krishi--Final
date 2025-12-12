@@ -14,7 +14,7 @@ const DiseaseDetection = () => {
     
     // Force absolute redirection with http://
     // Redirects to car.html as requested
-    window.location.href = `http://${cleanIp}:3000/car.html`;
+    window.location.href = `src/pages/scan.html`;
   };
 
   return (
