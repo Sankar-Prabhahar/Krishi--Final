@@ -14,7 +14,7 @@ const DiseaseDetection = () => {
     
     // Force absolute redirection with http://
     // Redirects to car.html as requested
-    window.location.href = `src/pages/scan.html`;
+    window.location.href = `Krishi-Final/src/pages/scan.html`;
   };
 
   return (
