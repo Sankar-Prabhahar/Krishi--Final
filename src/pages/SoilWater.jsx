@@ -14,7 +14,7 @@ const SoilWater = () => {
     
     // Force absolute redirection with http://
     // This ensures it goes to the external device, not a relative path
-    window.location.href = `src/pages/car.html`;
+    window.location.href = `/car.html`;
   };
 
   return (
