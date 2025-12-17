@@ -541,12 +541,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             const ipParam = urlParams.get('ip');
 
-            // Check if we are on HTTPS but trying to connect to HTTP
-            if (window.location.protocol === 'https:' && ipParam && !ipParam.startsWith('https')) {
-                console.warn("Mixed Content Warning: Connecting to HTTP device from HTTPS site.");
-                showMixedContentWarning();
-            }
-
             if (ipParam) {
                 document.getElementById('sys-ip').value = ipParam;
                 setTimeout(initSystem, 500); // Small delay to ensure load
@@ -554,22 +548,52 @@
         };
 
         function showMixedContentWarning() {
-            const statusDiv = document.getElementById('conn-status');
-            statusDiv.innerHTML = `
+            // Show on Login Screen (if visible)
+            const loginStatus = document.getElementById('conn-status');
+            if (loginStatus) {
+                loginStatus.innerHTML = `
                 <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; border: 1px solid #ffeeba; margin-top: 15px; text-align: left; font-size: 0.85rem;">
                     <strong>⚠️ Connection Blocked?</strong><br>
-                    Your browser might be blocking the connection to your local device because this site is secure (HTTPS) and your device is not.
-                    <br><br>
-                    <b>Fix:</b> Click the lock icon 🔒 in the address bar -> Site Settings -> Allow "Insecure Content" or "Mixed Content".
+                    Mixed Content (HTTP vs HTTPS).<br>
+                    <b>Fix:</b> Click 🔒 -> Site Settings -> Allow Insecure Content.
+                </div>`;
+                loginStatus.style.display = 'block';
+            }
+
+            // Show on Main Dashboard (Critical)
+            const dashHeader = document.querySelector('header');
+            let warningBanner = document.getElementById('dash-warning-banner');
+
+            if (!warningBanner) {
+                warningBanner = document.createElement('div');
+                warningBanner.id = 'dash-warning-banner';
+                warningBanner.style.cssText = "background: #fff3cd; color: #856404; padding: 12px; margin-bottom: 20px; border-radius: 12px; border: 1px solid #ffeeba; font-size: 0.9rem; text-align: left;";
+                dashHeader.parentNode.insertBefore(warningBanner, dashHeader.nextSibling);
+            }
+
+            warningBanner.innerHTML = `
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <span style="font-size:24px;">⚠️</span>
+                    <div>
+                        <strong>Connection Blocked by Browser</strong><br>
+                        This site is HTTPS but your device is HTTP (Mixed Content).<br>
+                        <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank" style="text-decoration:underline; font-weight:bold; color:#856404;">How to fix?</a>
+                        Click the Lock Icon 🔒 in your URL bar -> Site Settings -> Allow "Insecure Content".
+                    </div>
                 </div>
             `;
-            statusDiv.style.display = 'block';
         }
 
         // --- 1. SOCKET.IO (SENSORS) ---
         function initSocketSystem(ip) {
-            socket = io(`http://${ip}:2500`, { 
-                reconnectionAttempts: 3, 
+            // Check protocol mismatch immediately
+            if (window.location.protocol === 'https:' && !ip.startsWith('https')) {
+                console.warn("Mixed Content Warning: Connecting to HTTP device from HTTPS site.");
+                showMixedContentWarning();
+            }
+
+            socket = io(`http://${ip}:2500`, {
+                reconnectionAttempts: 3,
                 timeout: 5000,
                 transports: ['polling', 'websocket']
             });
