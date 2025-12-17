@@ -1,22 +1,13 @@
-import React, { useState } from "react";
-import { RefreshCw, ScanLine, ExternalLink } from "lucide-react";
+import React from "react";
+import { ScanLine, ExternalLink } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
 const SoilWater = () => {
-  const [ipAddress, setIpAddress] = useState("");
   const { t } = useLanguage();
 
-  const handleScan = () => {
-    if (!ipAddress) {
-      alert(t("enter_ip_alert"));
-      return;
-    }
-    // Remove protocol if user pastes it by mistake
-
-    const cleanIp = ipAddress.replace(/^https?:\/\//, "").replace(/\/$/, "");
-
-    // Force absolute redirection to the public static file
-    window.location.href = `/scan.html?ip=${cleanIp}`;
+  const handleRedirect = () => {
+    // Directly redirect to the static file
+    window.location.href = "/car.html";
   };
 
   return (
@@ -35,28 +26,10 @@ const SoilWater = () => {
           <ScanLine size={64} color="var(--color-primary)" />
         </div>
 
-        <div className="ip-input-container" style={{ marginBottom: "1.5rem" }}>
-          <input
-            type="text"
-            placeholder={t("pi_ip_placeholder")}
-            value={ipAddress}
-            onChange={(e) => setIpAddress(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "1rem",
-              borderRadius: "12px",
-              border: "2px solid var(--color-border)",
-              backgroundColor: "var(--color-bg)",
-              color: "var(--color-text)",
-              fontSize: "1rem",
-              outline: "none",
-              transition: "border-color 0.3s",
-            }}
-          />
-        </div>
+        {/* Input field removed */}
 
         <button
-          onClick={handleScan}
+          onClick={handleRedirect}
           className="btn btn-primary"
           style={{
             fontSize: "1.2rem",
@@ -64,21 +37,16 @@ const SoilWater = () => {
             borderRadius: "50px",
             boxShadow: "0 10px 25px -5px rgba(22, 163, 74, 0.4)",
             width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
           }}
         >
           <ExternalLink size={24} style={{ marginRight: "10px" }} />
-          {t("connect_scan")}
+          {/* You can keep the translation key or change it to a hardcoded string like "Open Interface" */}
+          {t("connect_scan")} 
         </button>
-
-        <p
-          style={{
-            marginTop: "1rem",
-            color: "var(--color-text-light)",
-            fontSize: "0.9rem",
-          }}
-        >
-          {t("pi_network_warning")}
-        </p>
       </div>
     </div>
   );
