@@ -2,7 +2,7 @@ import { findNearestMandis, getCommoditiesList } from "./marketService";
 
 const GEMINI_API_KEY = "AIzaSyC7gq-2GVffIOY774cZdah6LUNaFyRmGbo";
 const GEMINI_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
+  "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
 
 let lastRequestTime = 0;
 const MIN_REQUEST_INTERVAL = 2000; // 2 sec before requests
