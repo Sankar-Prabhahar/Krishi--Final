@@ -5,6 +5,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
+    allowedHosts: [
+      "exemption-deliver-backing-minimal.trycloudflare.com"
+    ],
     proxy: {
       "/api/market": {
         target: "https://api.data.gov.in",

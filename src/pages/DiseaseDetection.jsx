@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { Camera, ExternalLink, Bot } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const DiseaseDetection = () => {
   const [ipAddress, setIpAddress] = useState('');
+  const { t } = useLanguage();
 
   const handleConnect = () => {
     if (!ipAddress) {
-      alert("Please enter the IP Address of your Raspberry Pi");
+      alert(t('enter_ip_alert'));
       return;
     }
     // Remove protocol if user pastes it by mistake
     const cleanIp = ipAddress.replace(/^https?:\/\//, '').replace(/\/$/, '');
     
-    // Force absolute redirection with http://
-    // Redirects to car.html as requested
-    window.location.href = `http://${cleanIp}:3000/car.html`;
+    // Force absolute redirection to the public static file
+    window.location.href = `/car.html?ip=${cleanIp}`;
   };
 
   return (
@@ -26,14 +27,14 @@ const DiseaseDetection = () => {
         </div>
 
         <div style={{ marginBottom: '2rem' }}>
-          <h2 style={{ marginBottom: '0.5rem', color: 'var(--color-text)' }}>Agri-Bot Controller</h2>
-          <p style={{ color: 'var(--color-text-light)' }}>Connect to your field robot</p>
+          <h2 style={{ marginBottom: '0.5rem', color: 'var(--color-text)' }}>{t('agri_bot_title')}</h2>
+          <p style={{ color: 'var(--color-text-light)' }}>{t('connect_bot_desc')}</p>
         </div>
 
         <div className="ip-input-container" style={{ marginBottom: '1.5rem' }}>
           <input
             type="text"
-            placeholder="Enter Robot IP (e.g., 192.168.1.100)"
+            placeholder={t('bot_ip_placeholder')}
             value={ipAddress}
             onChange={(e) => setIpAddress(e.target.value)}
             style={{
@@ -62,11 +63,11 @@ const DiseaseDetection = () => {
           }}
         >
           <ExternalLink size={24} style={{ marginRight: '10px' }} />
-          Connect to Bot
+          {t('connect_bot')}
         </button>
         
         <p style={{ marginTop: '1rem', color: 'var(--color-text-light)', fontSize: '0.9rem' }}>
-          Redirects to car control interface
+          {t('bot_redirect_warning')}
         </p>
       </div>
 

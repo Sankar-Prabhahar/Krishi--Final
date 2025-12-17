@@ -78,6 +78,19 @@ export const translations = {
     // Soil & Water
     soil_title: "Soil & Water Intelligence",
     soil_subtitle: "AI-powered irrigation recommendations",
+    enter_ip_alert: "Please enter the IP Address of your Raspberry Pi",
+    pi_ip_placeholder: "Enter Raspberry Pi IP (e.g., 192.168.1.100)",
+    connect_scan: "Connect & Scan",
+    pi_network_warning:
+      "Make sure your device is on the same network as the Pi",
+
+    // Disease Detection
+    disease_title: "AI Disease Detection",
+    agri_bot_title: "Agri-Bot Controller",
+    connect_bot_desc: "Connect to your field robot",
+    bot_ip_placeholder: "Enter Robot IP (e.g., 192.168.1.100)",
+    connect_bot: "Connect to Bot",
+    bot_redirect_warning: "Redirects to car control interface",
     health_score: "Health Score",
     soil_health: "Soil Health",
     optimal: "Optimal",
@@ -315,8 +328,22 @@ export const translations = {
     prevention_tips: "बचाव के उपाय",
     recent_scans: "हाल के स्कैन",
 
+    // Soil & Water
     soil_title: "मिट्टी और जल खुफिया",
     soil_subtitle: "AI सिंचाई सिफारिशें",
+    enter_ip_alert: "कृपया अपने रास्पबेरी पाई का आईपी पता दर्ज करें",
+    pi_ip_placeholder: "रास्पबेरी पाई आईपी दर्ज करें (जैसे, 192.168.1.100)",
+    connect_scan: "कनेक्ट और स्कैन करें",
+    pi_network_warning:
+      "सुनिश्चित करें कि आपका डिवाइस और पाई एक ही नेटवर्क पर हैं",
+
+    // Disease Detection
+    disease_title: "AI रोग पहचान",
+    agri_bot_title: "एग्री-बॉट कंट्रोलर",
+    connect_bot_desc: "अपने फील्ड रोबोट से कनेक्ट करें",
+    bot_ip_placeholder: "रोबोट आईपी दर्ज करें (जैसे, 192.168.1.100)",
+    connect_bot: "बॉट से कनेक्ट करें",
+    bot_redirect_warning: "कार नियंत्रण इंटरफ़ेस पर रीडायरेक्ट करता है",
     health_score: "स्वास्थ्य स्कोर",
     soil_health: "मिट्टी का स्वास्थ्य",
     optimal: "इष्टतम",
