@@ -218,8 +218,10 @@ Output format:
                     // This is likely a Network Error or Mixed Content Block
                     showError(`
                         <b>Connection Failed!</b><br>
-                        This is likely due to "Mixed Content" blocking.<br><br>
-                        <b>Fix:</b> Click the lock icon 🔒 in the URL bar -> Site Settings -> Allow "Insecure Content".
+                        1. <b>Mixed Content:</b> Click Lock 🔒 -> Site Settings -> Allow "Insecure Content".<br>
+                        2. <b>Private Network (PNA):</b> Chrome might block Public->Local requests.<br>
+                        - Go to: <code>chrome://flags/#block-insecure-private-network-requests</code><br>
+                        - Set to <b>Disabled</b> and Relaunch.
                     `);
                 } else {
                     showError("Camera Error: " + err.message);
