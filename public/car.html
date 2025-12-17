@@ -540,20 +540,52 @@
         window.onload = function () {
             const urlParams = new URLSearchParams(window.location.search);
             const ipParam = urlParams.get('ip');
+
+            // Check if we are on HTTPS but trying to connect to HTTP
+            if (window.location.protocol === 'https:' && ipParam && !ipParam.startsWith('https')) {
+                console.warn("Mixed Content Warning: Connecting to HTTP device from HTTPS site.");
+                showMixedContentWarning();
+            }
+
             if (ipParam) {
                 document.getElementById('sys-ip').value = ipParam;
                 setTimeout(initSystem, 500); // Small delay to ensure load
             }
         };
 
+        function showMixedContentWarning() {
+            const statusDiv = document.getElementById('conn-status');
+            statusDiv.innerHTML = `
+                <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; border: 1px solid #ffeeba; margin-top: 15px; text-align: left; font-size: 0.85rem;">
+                    <strong>⚠️ Connection Blocked?</strong><br>
+                    Your browser might be blocking the connection to your local device because this site is secure (HTTPS) and your device is not.
+                    <br><br>
+                    <b>Fix:</b> Click the lock icon 🔒 in the address bar -> Site Settings -> Allow "Insecure Content" or "Mixed Content".
+                </div>
+            `;
+            statusDiv.style.display = 'block';
+        }
+
         // --- 1. SOCKET.IO (SENSORS) ---
         function initSocketSystem(ip) {
-            socket = io(`http://${ip}:2500`, { reconnectionAttempts: 3, timeout: 2000 });
+            socket = io(`http://${ip}:2500`, { 
+                reconnectionAttempts: 3, 
+                timeout: 5000,
+                transports: ['polling', 'websocket']
+            });
+
+            socket.on('connect_error', (err) => {
+                console.error("Socket Connection Error:", err);
+                document.getElementById('socket-text').innerText = "Connection Failed";
+                showMixedContentWarning();
+            });
 
             socket.on('connect', () => {
                 const badge = document.getElementById('socket-badge');
                 badge.classList.add('online');
                 document.getElementById('socket-text').innerText = "Sensors Online";
+                // Hide warning if successful
+                document.getElementById('conn-status').style.display = 'none';
             });
 
             socket.on('disconnect', () => {

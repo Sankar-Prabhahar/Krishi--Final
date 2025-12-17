@@ -153,12 +153,12 @@
         // Camera Configuration (Dynamic)
         const urlParams = new URLSearchParams(window.location.search);
         let ipParam = urlParams.get('ip') || "192.168.137.109";
-        
+
         // Ensure port 8080 is present
         if (!ipParam.includes(':')) {
             ipParam += ':8080';
         }
-        
+
         const CAM_IP = ipParam;
         const SNAPSHOT_URL = `http://${CAM_IP}/?action=snapshot`;
 
@@ -209,7 +209,12 @@ Output format:
             } catch (err) {
                 console.error(err);
                 if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                    showError("CORS Error: Camera blocked access. Try uploading an image instead.");
+                    // This is likely a Network Error or Mixed Content Block
+                    showError(`
+                        <b>Connection Failed!</b><br>
+                        This is likely due to "Mixed Content" blocking.<br><br>
+                        <b>Fix:</b> Click the lock icon 🔒 in the URL bar -> Site Settings -> Allow "Insecure Content".
+                    `);
                 } else {
                     showError("Camera Error: " + err.message);
                 }
