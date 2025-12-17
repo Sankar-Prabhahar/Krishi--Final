@@ -581,10 +581,11 @@
                 <div style="display:flex; gap:10px; align-items:center;">
                     <span style="font-size:24px;">⚠️</span>
                     <div>
-                        <strong>Connection Blocked by Browser</strong><br>
-                        This site is HTTPS but your device is HTTP (Mixed Content).<br>
-                        <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank" style="text-decoration:underline; font-weight:bold; color:#856404;">How to fix?</a>
-                        Click the Lock Icon 🔒 in your URL bar -> Site Settings -> Allow "Insecure Content".
+                        <strong>Connection Blocked?</strong><br>
+                        1. <b>Mixed Content:</b> Click Lock 🔒 -> Site Settings -> Allow "Insecure Content".<br>
+                        2. <b>PNA Block:</b> Open <code>chrome://flags/#block-insecure-private-network-requests</code> -> Set to <b>Disabled</b> -> Relaunch.<br>
+                        3. <b>Firewall:</b> Check Port 2500 on Pi.<br>
+                        <a href="https://developer.chrome.com/blog/private-network-access-preflight" target="_blank" style="text-decoration:underline; font-weight:bold; color:#856404;">More Info</a>
                     </div>
                 </div>
             `;
