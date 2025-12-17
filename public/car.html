@@ -421,7 +421,13 @@
     <!-- MAIN DASHBOARD -->
     <div id="dashboard">
         <header>
-            <h2 class="dash-title">AgroMonitor</h2>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="/"
+                    style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #e2e8f0; border-radius: 50%; color: #64748b; font-weight: bold; font-size: 18px;">
+                    &larr;
+                </a>
+                <h2 class="dash-title">AgroMonitor</h2>
+            </div>
             <div id="socket-badge" class="status-badge">
                 <div class="status-dot"></div>
                 <span id="socket-text">Sensor Offline</span>
