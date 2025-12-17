@@ -421,13 +421,7 @@
     <!-- MAIN DASHBOARD -->
     <div id="dashboard">
         <header>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <a href="/"
-                    style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #e2e8f0; border-radius: 50%; color: #64748b; font-weight: bold; font-size: 18px;">
-                    &larr;
-                </a>
-                <h2 class="dash-title">AgroMonitor</h2>
-            </div>
+            <h2 class="dash-title">AgroMonitor</h2>
             <div id="socket-badge" class="status-badge">
                 <div class="status-dot"></div>
                 <span id="socket-text">Sensor Offline</span>
@@ -546,77 +540,20 @@
         window.onload = function () {
             const urlParams = new URLSearchParams(window.location.search);
             const ipParam = urlParams.get('ip');
-
             if (ipParam) {
                 document.getElementById('sys-ip').value = ipParam;
                 setTimeout(initSystem, 500); // Small delay to ensure load
             }
         };
 
-        function showMixedContentWarning() {
-            // Show on Login Screen (if visible)
-            const loginStatus = document.getElementById('conn-status');
-            if (loginStatus) {
-                loginStatus.innerHTML = `
-                <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; border: 1px solid #ffeeba; margin-top: 15px; text-align: left; font-size: 0.85rem;">
-                    <strong>⚠️ Connection Blocked?</strong><br>
-                    Mixed Content (HTTP vs HTTPS).<br>
-                    <b>Fix:</b> Click 🔒 -> Site Settings -> Allow Insecure Content.
-                </div>`;
-                loginStatus.style.display = 'block';
-            }
-
-            // Show on Main Dashboard (Critical)
-            const dashHeader = document.querySelector('header');
-            let warningBanner = document.getElementById('dash-warning-banner');
-
-            if (!warningBanner) {
-                warningBanner = document.createElement('div');
-                warningBanner.id = 'dash-warning-banner';
-                warningBanner.style.cssText = "background: #fff3cd; color: #856404; padding: 12px; margin-bottom: 20px; border-radius: 12px; border: 1px solid #ffeeba; font-size: 0.9rem; text-align: left;";
-                dashHeader.parentNode.insertBefore(warningBanner, dashHeader.nextSibling);
-            }
-
-            warningBanner.innerHTML = `
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <span style="font-size:24px;">⚠️</span>
-                    <div>
-                        <strong>Connection Blocked?</strong><br>
-                        1. <b>Mixed Content:</b> Click Lock 🔒 -> Site Settings -> Allow "Insecure Content".<br>
-                        2. <b>PNA Block:</b> Open <code>chrome://flags/#block-insecure-private-network-requests</code> -> Set to <b>Disabled</b> -> Relaunch.<br>
-                        3. <b>Firewall:</b> Check Port 2500 on Pi.<br>
-                        <a href="https://developer.chrome.com/blog/private-network-access-preflight" target="_blank" style="text-decoration:underline; font-weight:bold; color:#856404;">More Info</a>
-                    </div>
-                </div>
-            `;
-        }
-
         // --- 1. SOCKET.IO (SENSORS) ---
         function initSocketSystem(ip) {
-            // Check protocol mismatch immediately
-            if (window.location.protocol === 'https:' && !ip.startsWith('https')) {
-                console.warn("Mixed Content Warning: Connecting to HTTP device from HTTPS site.");
-                showMixedContentWarning();
-            }
-
-            socket = io(`http://${ip}:2500`, {
-                reconnectionAttempts: 3,
-                timeout: 5000,
-                transports: ['polling', 'websocket']
-            });
-
-            socket.on('connect_error', (err) => {
-                console.error("Socket Connection Error:", err);
-                document.getElementById('socket-text').innerText = "Connection Failed";
-                showMixedContentWarning();
-            });
+            socket = io(`http://${ip}:2500`, { reconnectionAttempts: 3, timeout: 2000 });
 
             socket.on('connect', () => {
                 const badge = document.getElementById('socket-badge');
                 badge.classList.add('online');
                 document.getElementById('socket-text').innerText = "Sensors Online";
-                // Hide warning if successful
-                document.getElementById('conn-status').style.display = 'none';
             });
 
             socket.on('disconnect', () => {

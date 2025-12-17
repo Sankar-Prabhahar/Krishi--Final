@@ -71,13 +71,7 @@
         <!-- HEADER -->
         <header
             class="p-4 flex items-center justify-between sticky top-0 z-10 bg-bg-light/90 dark:bg-bg-dark/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-            <div class="flex items-center gap-3">
-                <a href="/"
-                    class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                    <span class="material-symbols-outlined text-xl">arrow_back</span>
-                </a>
-                <h1 class="text-xl font-bold text-primary flex-1">Krishi Mitra</h1>
-            </div>
+            <h1 class="text-xl font-bold text-primary text-center flex-1">Krishi Mitra</h1>
 
             <a href="notifications.html">
                 <span class="material-symbols-outlined text-bg-dark dark:text-bg-light text-2xl">notifications</span>
@@ -215,14 +209,7 @@ Output format:
             } catch (err) {
                 console.error(err);
                 if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                    // This is likely a Network Error or Mixed Content Block
-                    showError(`
-                        <b>Connection Failed!</b><br>
-                        1. <b>Mixed Content:</b> Click Lock 🔒 -> Site Settings -> Allow "Insecure Content".<br>
-                        2. <b>Private Network (PNA):</b> Chrome might block Public->Local requests.<br>
-                        - Go to: <code>chrome://flags/#block-insecure-private-network-requests</code><br>
-                        - Set to <b>Disabled</b> and Relaunch.
-                    `);
+                    showError("CORS Error: Camera blocked access. Try uploading an image instead.");
                 } else {
                     showError("Camera Error: " + err.message);
                 }
