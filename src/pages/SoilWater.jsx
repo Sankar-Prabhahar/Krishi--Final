@@ -12,10 +12,18 @@ const SoilWater = () => {
       return;
     }
     // Remove protocol if user pastes it by mistake
+<<<<<<< HEAD
     const cleanIp = ipAddress.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
     // Force absolute redirection to the public static file
     window.location.href = `/scan.html?ip=${cleanIp}`;
+=======
+    const cleanIp = ipAddress.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    
+    // Force absolute redirection with http://
+    // This ensures it goes to the external device, not a relative path
+    window.location.href = `/car.html`;
+>>>>>>> 5774d07416e9a1f535ee7da21e1edd7310a80560
   };
 
   return (
